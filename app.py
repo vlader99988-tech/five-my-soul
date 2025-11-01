@@ -1,3 +1,18 @@
+import subprocess
+import sys
+
+# Автоматическая установка зависимостей
+def install_packages():
+    packages = ['flask', 'telethon', 'transformers', 'torch']
+    for package in packages:
+        try:
+            __import__(package)
+        except ImportError:
+            print(f"📦 Установка {package}...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+install_packages()
+
 from flask import Flask
 from threading import Thread
 import os
@@ -32,11 +47,11 @@ print("🌐 Веб-сервер запущен для поддержания а�
 
 try:
     tokenizer = AutoTokenizer.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
-    model = AutoModelForCausalLM.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
+    model = AutoModelForCausalLM.from_pretrained("sberbank-ai/rugpt3mall_based_on_gpt2")
     model_loaded = True
     print("✅ МОДЕЛЬ ЗАГРУЖЕНА")
 except Exception as e:
-    print(f"❌ Ошибка загрузки: {e}")
+    print(f"❌ Ошибка загрузки модели: {e}")
     model_loaded = False
 
 def generate_short_response(text, user_id):
@@ -140,7 +155,8 @@ async def handle_group_message(event):
         user_message = event.text
         
         # Отвечаем только если бота упомянули или это ответ на его сообщение
-        if f'@{await client.get_me().username}' in user_message or event.is_reply:
+        me = await client.get_me()
+        if f'@{me.username}' in user_message or event.is_reply:
             print(f"👥 ГРУППА {chat_id} от {user_id}: {user_message}")
             
             try:
