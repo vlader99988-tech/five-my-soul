@@ -1,5 +1,4 @@
+flask
 telethon
 transformers
-torch --index-url https://download.pytorch.org/whl/cpu
-flask
-requests
+torch
